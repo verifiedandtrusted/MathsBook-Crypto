@@ -3,584 +3,946 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maths Book Game with P2P Wallet</title>
+    <title>Maths Book Game with P2P Wallet - Upgraded</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-purple: #2c003e;
+            --secondary-purple: #4a0072;
+            --accent-purple: #6a00a8;
+            --gold-text: #FFD700;
+            --accent-gold: #FFB300;
+            --dark-bg: rgba(20, 0, 30, 0.85); /* Darker semi-transparent bg for containers */
+            --light-text: #f0f0f0;
+        }
+
         body {
-            font-family: 'Source Code Pro', 'Courier' , monospace ;
-            background: linear-gradient(135deg, #000428, #4a148c, #81d4fa);
+            font-family: 'Source Code Pro', 'Courier', monospace;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple), var(--accent-purple));
             margin: 0;
-            padding: 0;
-            color: gold;
+            padding: 20px; /* Add some padding to the body */
+            color: var(--gold-text);
             text-align: center;
             overflow-x: hidden;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            box-sizing: border-box;
         }
+
         #loadingPage {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, #2a0845, #6441a5);
+            background: linear-gradient(45deg, var(--primary-purple), var(--secondary-purple));
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            color: #FFD700;
-            font-size: 2em;
-            animation: glow 2s ease-in-out infinite alternate;
-            z-index: 1000;
+            color: var(--gold-text);
+            font-size: 1.5em; /* Adjusted font size */
+            z-index: 2000;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700; }
-            to { text-shadow: 0 0 20px #FF4500, 0 0 40px #FF4500; }
+
+        #loadingLogoM {
+            font-size: 10em; /* Large M */
+            font-weight: bold;
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px var(--gold-text), 0 0 20px var(--accent-gold), 2px 2px 2px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            animation: subtlePulse 2s ease-in-out infinite alternate;
         }
-        .exchange-button, .videos-button, .shop-button, .referral-button {
-            display: inline-block;
-            margin-top: 20px;
+
+        @keyframes subtlePulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
         }
-        #extraButtons {
-    margin-top: 20px;
-       }
-#exchangeButton, #videosButton, #shopButton, #referralButton {
-    display: inline-block;
-    margin: 10px;
-    cursor: pointer;
-}
+        
+        #loadingPage p {
+            margin: 10px 0;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+        }
+
+        .container-card {
+            background-color: var(--dark-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+            border: 1px solid var(--accent-gold);
+        }
 
         .help-button, .wallet-button {
-            position: absolute;
-            font-size: 2em;
-            background: transparent;
-            color: white;
+            position: fixed; /* Fixed position for better accessibility */
+            font-size: 2.5em; /* Slightly larger */
+            background: var(--accent-gold);
+            color: var(--primary-purple);
             border: none;
             cursor: pointer;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            z-index: 1000;
         }
+        .help-button:hover, .wallet-button:hover {
+            transform: scale(1.1);
+            background-color: var(--gold-text);
+        }
+
         .help-button { top: 20px; right: 20px; }
         .wallet-button { top: 20px; left: 20px; }
+
         .help-modal {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #000000;
-            color: purple;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 100;
+            background-color: var(--primary-purple);
+            color: var(--gold-text);
+            padding: 30px;
+            border-radius: 15px;
+            z-index: 1100; /* Ensure modal is above buttons */
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid var(--accent-gold);
         }
+        .help-modal h3 {
+            color: var(--accent-gold);
+            margin-top: 0;
+        }
+        .help-modal p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
         .close-modal {
             position: absolute;
             top: 15px;
             right: 15px;
             cursor: pointer;
+            font-size: 1.8em;
+            color: var(--accent-gold);
+            background: transparent;
+            border: none;
+            padding: 5px;
         }
-          .button {
-  padding: 0.6em 2em;
-  border: none;
-  outline: none;
-  color: rgb(0, 0, 0);
-  background: #b700ff;
-  cursor: pointer;
-  position: relative;
-  z-index: 0;
-  border-radius: 10px;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-      }
-      .button:before {
-  content: "";
-  background: linear-gradient(
-    45deg,
-    #ff0000,
-    #ff7300,
-    #fffb00,
-    #48ff00,
-    #00ffd5,
-    #002bff,
-    #7a00ff,
-    #ff00c8,
-    #ff0000
-  );
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  background-size: 400%;
-  z-index: -1;
-  filter: blur(5px);
-  -webkit-filter: blur(5px);
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  animation: glowing-button-85 20s linear infinite;
-  transition: opacity 0.3s ease-in-out;
-  border-radius: 10px;
-}
+        .close-modal:hover {
+            color: var(--gold-text);
+        }
 
-@keyframes glowing-button {
-  0% {
-    background-position: 0 0;
-  }
-  50% {
-    background-position: 400% 0;
-  }
-  100% {
-    background-position: 0 0;
-  }
-}
-       .button:after {
-  z-index: -1;
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: #b700ff;
-  left: 0;
-  top: 0;
-  border-radius: 10px;
+        .button {
+            padding: 12px 25px; /* Increased padding */
+            border: none;
+            outline: none;
+            color: var(--primary-purple); /* Dark text on gold button */
+            background: var(--accent-gold);
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            font-weight: bold;
+            font-size: 1em;
+            margin: 10px 5px; /* Consistent margin */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
+        .button:before {
+            content: "";
+            background: linear-gradient(
+                45deg,
+                #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5,
+                #002bff, #7a00ff, #ff00c8, #ff0000
+            );
+            position: absolute;
+            top: -3px; /* Adjusted for thicker border */
+            left: -3px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(8px); /* Slightly more blur */
+            -webkit-filter: blur(8px);
+            width: calc(100% + 6px);
+            height: calc(100% + 6px);
+            animation: glowing-button 20s linear infinite;
+            transition: opacity 0.3s ease-in-out;
+            border-radius: 12px; /* Match button border-radius */
+        }
+
+        @keyframes glowing-button {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        .button:after {
+            z-index: -1;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gold);
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+
         .button:hover {
-            background: #ff095;
-            transform: translateY(-5px);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
+         .button:active {
+            transform: translateY(1px);
+        }
+
+        #vendorButton {
+            background: linear-gradient(45deg, var(--gold-text), var(--accent-gold));
+            color: var(--primary-purple);
+            animation: vendor-glow 1.5s infinite alternate;
+            border: 2px solid var(--gold-text);
+        }
+
+        @keyframes vendor-glow {
+            0% { box-shadow: 0 0 5px var(--gold-text), 0 0 10px var(--gold-text), 0 0 15px var(--accent-gold); }
+            100% { box-shadow: 0 0 10px var(--accent-gold), 0 0 20px var(--accent-gold), 0 0 30px var(--gold-text); }
+        }
+
+
         #gameContainer, #walletContainer, #loginContainer {
             display: none;
-            padding: 20px;
         }
-        h1 {
-            font-size: 3em;
-            color: #FFD700;
-            text-shadow: 2px 2px 10px rgba(0, 0, 3, 0.2);
+        
+        #gameContainer h1, #walletContainer h1, #loginContainer h2 {
+             font-size: 2.5em; /* Adjusted heading size */
+             color: var(--accent-gold);
+             text-shadow: 1px 1px 8px rgba(0,0,0,0.5);
+             margin-bottom: 20px;
         }
-        #timer, #levelLockoutTimer {
-            font-size: 1.5em;
-            color: #FF4500;
-            margin-top: 10px;
+
+        #balanceDisplay, #timer, #levelLockoutTimer {
+            font-size: 1.3em; /* Adjusted font size */
+            color: var(--light-text); /* Lighter text for readability */
+            margin-top: 15px;
+            margin-bottom: 15px;
+            background-color: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
         }
+        #balanceDisplay strong {
+            color: var(--accent-gold);
+        }
+        #timer { color: #FF6347; /* Tomato color for timer */ }
+
+
         .answer {
             display: block;
             padding: 15px;
-            margin: 15px auto;
-            font-size: 1.2em;
-            background-color: #333;
-            color: white;
-            border: 1px solid #ff4081;
-            border-radius: 10px;
+            margin: 10px auto; /* Adjusted margin */
+            font-size: 1.1em;
+            background-color: var(--secondary-purple);
+            color: var(--light-text);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
             cursor: pointer;
-            width: 80%;
-            margin-bottom: 20px;
-            transition: background-color 0.3s ease;
+            width: 90%;
+            max-width: 350px; /* Max width for answer buttons */
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .answer:hover {
-            background-color: #ff4081;
+            background-color: var(--accent-purple);
+            transform: scale(1.02);
         }
-        .wallet-section, .login-section {
-            padding: 10px;
+        
+        #questionContainer p {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: var(--light-text);
         }
+
+        input[type="text"], input[type="number"] {
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 1em;
+            background-color: rgba(0,0,0,0.3);
+            color: var(--gold-text);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px;
+            width: calc(90% - 24px); /* Adjust width considering padding */
+            max-width: 350px;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--accent-gold);
+            outline: none;
+            box-shadow: 0 0 8px var(--accent-gold);
+        }
+
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(255,215,0,0), rgba(255,215,0,0.75), rgba(255,215,0,0));
+            margin: 30px 0;
+        }
+
+        #dailyRewardSection h2, #mathsBookCodeSection h2, #walletContainer h3 {
+            color: var(--accent-gold);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
         .book-emoji {
-            font-size: 3em;
-            position: absolute;
-            top: 90%;
-            left: 10%;
+            font-size: 3.5em; /* Slightly larger */
+            position: fixed; /* Changed to fixed for better visibility */
+            bottom: 20px;
+            left: 20px;
             cursor: pointer;
-            animation: float 2s infinite ease-in-out;
+            animation: float 3s infinite ease-in-out;
+            z-index: 900;
+            text-shadow: 0 0 10px var(--gold-text);
         }
         @keyframes float {
             0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
+
         .reward-notification {
-            position: absolute;
-            top: 85%;
-            font: 'Arial', 'Impact, sans-serif;
-            left: 10%;
+            position: fixed; /* Changed to fixed */
+            bottom: 70px; /* Position above book */
+            left: 20px;
             font-size: 1.5em;
-            color: #119e43;
-            animation: fadeOut 1s ease-out;
+            color: #39FF14; /* Neon green */
+            animation: fadeOutUp 1.5s ease-out forwards;
             opacity: 1;
+            font-weight: bold;
+            text-shadow: 0 0 5px #000;
+            z-index: 901;
         }
-        @keyframes fadeOut {
-            0% { opacity: 1; }
-            100% { opacity: 0; }
+        @keyframes fadeOutUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
         }
-        .hidden { display: none; }
+
+        .hidden { display: none !important; } /* Ensure hidden is respected */
+        
+        #historyList {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        #historyList li {
+            padding: 10px;
+            border-bottom: 1px solid var(--accent-purple);
+            color: var(--light-text);
+            font-size: 0.9em;
+        }
+        #historyList li:last-child {
+            border-bottom: none;
+        }
+
+        #extraButtons {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+            justify-content: center;
+            gap: 10px; /* Spacing between buttons */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            #loadingPage p { font-size: 1.2em; }
+            #loadingLogoM { font-size: 8em; }
+            .container-card { padding: 15px; margin-top: 20px; }
+            h1, #gameContainer h1, #walletContainer h1, #loginContainer h2 { font-size: 2em; }
+            .button { padding: 10px 20px; font-size: 0.9em; }
+            .help-button, .wallet-button { font-size: 2em; width: 45px; height: 45px; }
+            .help-button { top: 10px; right: 10px; }
+            .wallet-button { top: 10px; left: 10px; }
+            .book-emoji { font-size: 3em; bottom: 10px; left: 10px; }
+            .reward-notification { bottom: 50px; left: 10px; }
+            .answer { width: 100%; }
+            input[type="text"], input[type="number"] { width: calc(100% - 24px); }
+        }
+
     </style>
 </head>
 <body>
 
     <div id="loadingPage">
-        <p>📚 Welcome to Maths Book Cryptocurrency Mining and P2P wallet 📖</p>
+        <div id="loadingLogoM">M</div>
+        <p>📚 Welcome to Maths Book Cryptocurrency Mining and P2P Wallet 📖</p>
+        <p>Initializing Secure Connection...</p>
         <p>Listing on the Bitcoin Network...</p>
     </div>
+    
+    <button class="help-button" onclick="toggleHelp()">?</button>
+    <button class="wallet-button" onclick="openWallet()">🛄</button>
 
-    <div id="gameContainer">
+    <div id="gameContainer" class="container-card">
         <h1>Select Level</h1>
-        <p id="balanceDisplay">MathsBook Balance: <strong id="mathsBookBalance"></strong> MathsBook</p>
-        <button class="button" onclick="startGame('basic')">Basic</button>
-        <button class="button" onclick="startGame('medium')">Medium</button>
-        <button class="button" onclick="startGame('advanced')">Advanced</button>
+        <p id="balanceDisplay">MathsBook Balance: <strong id="mathsBookBalance">0.00</strong> MBK</p>
+        
+        <div>
+            <button class="button" onclick="startGame('basic')">Basic</button>
+            <button class="button" onclick="startGame('medium')">Medium</button>
+            <button class="button" onclick="startGame('advanced')">Advanced</button>
+        </div>
+        
         <p id="timer">Time Left: 1:00</p>
         <p id="levelLockoutTimer" class="hidden">Next game available in: </p>
-         <div id="extraButtons">
-    <button class="button" id="exchangeButton">Menu</button>
-       <button class="button" id="videosButton">Invest</button>
-      <button class="button"
-id="shopButton">Shop</button>
-      <button class="button" id="referralButton">About MathsBook</button>
-      <button class="button"
-</div>
+        
         <div id="questionContainer"></div>
         <p id="finalScore" class="hidden"></p>
+
+        <hr class="section-divider">
+        
+        <div id="extraButtons">
+            <button class="button" id="exchangeButtonNav">Menu</button> <button class="button" id="videosButton">Invest</button>
+            <button class="button" id="shopButton">Shop</button>
+            <button class="button" id="referralButton">About MathsBook</button>
+        </div>
+        
+        <button class="button" id="vendorButton" onclick="openVendorSite()">Vendor: Sell and Buy MathsBook now</button>
+        
+        <hr class="section-divider">
+
         <div id="dailyRewardSection">
             <h2>Daily Reward</h2>
             <button class="button" onclick="claimDailyReward()">Claim Daily Reward</button>
             <p id="rewardMessage"></p>
         </div>
+
+        <hr class="section-divider">
+
         <div id="mathsBookCodeSection">
             <h2>Redeem MathsBook Code</h2>
             <input type="text" id="mathsBookCode" placeholder="Enter MathsBook code" />
             <button class="button" onclick="redeemMathsBookCode()">Redeem</button>
             <p id="codeMessage"></p>
         </div>
+        
         <span class="book-emoji" onclick="collectBookToken()">📖</span>
-        <button class="help-button" onclick="toggleHelp()">?</button>
-        <button class="wallet-button" onclick="openWallet()">🛄</button>
+        
         <div id="helpModal" class="help-modal">
-            <p><strong>How to Play:</strong></p>
-            <p>Choose a level and solve as many math questions as possible within 1 minute to earn MathsBook tokens,Each correct question is =1 MathsBook.</p>
-            <p><strong>Daily Reward:</strong> Claim a daily reward each day, increasing up to 7 days! MBK 1,5, 10, 15, 20, 50, 100 also tap the floating maths book😊.Watch Videos & Earn 100 MBK per video,Send & receive MBK in wallet🛄. You can also Earn BTC and bonus MathsBook by sharing referall link,Maths Book Exchange shows the real live Price and USDT balance which will be withdrawn on listing day.</p>
-            <span class="close-modal" onclick="toggleHelp()">X</span>
+            <button class="close-modal" onclick="toggleHelp()">×</button>
+            <h3>How to Play:</h3>
+            <p>Choose a level and solve as many math questions as possible within 1 minute to earn MathsBook tokens. Each correct question = 1 MathsBook.</p>
+            <h3>Daily Reward & More:</h3>
+            <p>Claim a daily reward! The reward increases for up to 7 consecutive days: MBK 1, 5, 10, 15, 20, 50, 100. Don't forget to tap the floating maths book for small bonuses! 😊</p>
+            <p>Watch Videos & Earn 100 MBK per video. Send & receive MBK in your secure P2P wallet 🛄.</p>
+            <p>Earn BTC and bonus MathsBook by sharing your referral link. The Maths Book Exchange shows the real-time price and USDT balance, withdrawable on listing day.</p>
         </div>
     </div>
 
-    <div id="loginContainer" class="login-section">
+    <div id="loginContainer" class="container-card login-section">
         <h2>MathsBook Wallet Login</h2>
         <input type="text" id="loginID" placeholder="Enter your Telegram ID">
         <button class="button" onclick="loginToWallet()">Login</button>
     </div>
 
-    <div id="walletContainer" class="wallet-section">
+    <div id="walletContainer" class="container-card wallet-section">
         <h1>MathsBook P2P Wallet</h1>
-        <p>Your Telegram ID: <span id="walletTelegramID"></span></p>
-        <button class="button" onclick="goBack()">Back</button>
-        <p>Balance: <span id="walletBalanceDisplay"></span> MathsBook</p>
+        <p>Your Telegram ID: <strong id="walletTelegramID" style="color: var(--accent-gold);"></strong></p>
+        <button class="button" onclick="goBack()">Back to Game</button>
+        <p style="font-size: 1.2em;">Balance: <strong id="walletBalanceDisplay" style="color: var(--accent-gold);"></strong> MathsBook</p>
+        
+        <hr class="section-divider">
+        
         <h3>Send MathsBook</h3>
         <input type="text" id="recipientID" placeholder="Recipient Telegram ID">
-        <input type="number" id="sendAmount" placeholder="Amount to Send">
-        <input type="text" id="sendMessage" placeholder="Sign Message">
+        <input type="number" id="sendAmount" placeholder="Amount to Send (Min: 10,000)">
+        <input type="text" id="sendMessage" placeholder="Sign Message (Optional)">
         <button class="button" onclick="generateTransferCode()">Generate Transfer Code</button>
-        <p id="generatedCode"></p>
+        <p id="generatedCode" style="color: var(--light-text); word-break: break-all;"></p>
+        
+        <hr class="section-divider">
+
         <h3>Receive MathsBook</h3>
         <input type="text" id="transferCode" placeholder="Enter Transfer Code">
         <input type="number" id="receiveAmount" placeholder="Amount to Verify">
-        <input type="text" id="receiveMessage" placeholder="Verify Sign Message">
+        <input type="text" id="receiveMessage" placeholder="Verify Sign Message (If any)">
         <button class="button" onclick="decodeTransferCode()">Redeem Code</button>
+        
+        <hr class="section-divider">
+
         <h3>Transaction History</h3>
-        <button class="button" onclick="toggleHistory()">📝 History</button>
+        <button class="button" onclick="toggleHistory()">📝 View/Hide History</button>
         <ul id="historyList" class="hidden"></ul>
     </div>
 
     <script>
-        function transitionToMainPage() {
-            document.getElementById('loadingPage').style.display = 'none';
-            document.getElementById('gameContainer').style.display = 'block';
-            document.getElementById("mathsBookBalance").innerText = mathsBookBalance.toFixed(2);
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(transitionToMainPage, 3000);
-        });
-
+        // --- Global Variables & Initialization ---
         let mathsBookBalance = parseFloat(localStorage.getItem('mathsBookBalance')) || 0;
         let telegramID = localStorage.getItem('telegramID');
         let usedCodes = JSON.parse(localStorage.getItem("usedCodes")) || [];
-        const validCodes = ["MATH2024", "BOOK2024", "TOKEN2024", "WINNER2024", "MB127", "GJYO5", "907BOOK", "1DOLLARperCOIN", "FUN2024", 
-"COOL024", "MONEY2024", "MB025", "HAPPY202", "LUCK2024", "SMARTBOOK", "GENIUS204", "PASS2024", "EASYMBK", 
-"GETBOOK", "COINWIN", "WINMBK", "HERO2024", "FINDTOKEN", "MYCOIN2024", "SHARE2034", "FUNNYMBK", "BOOST2024", 
-"MBWIN2074", "TOKENFINDER", "LUCKYBOOK", "NEWCOIN2024", "PRIZE2004", "TREASURE24", "COOLCOIN", "GETMORE", 
-"WINNERCOIN", "REWARD24", "1COIN4U", "NEWBOOK24", "EASYCOIN", "1MBFORU", "EXTRABOOK", "BOOKGENIUS", 
-"TOPTOKEN", "BONUS25", "RICHCOIN", "LUCK24", "GETWIN", "WINSOON", "LUCKMBK", "GREAT2025", "FUNNY2025", 
-"GOODLUCK", "SMART2064", "TOPMBK", "GOLDEN24", "BESTCOIN", "TOPPRIZE", "WINBIG24", "1DOLLARMORE", "MOREWIN24", 
-"MYLUCK24", "NEWBOOK2BTC", "SMALLCOIN", "LUCKYNOW", "TOKENBOOST", "REWARD24", "WINBIG2044", "GOODTOKEN", 
-"HUGEWIN245", "MYPRIZE24", "FRESHCOIN", "WINCOIN240", "EXTRATOKEN", "RICHBOOK", "LUCKFORU", "SHAREBIG", 
-"PRIZECOIN", "DREAM2024", "GETBOOK24", "1TOKEN4U", "LUCKY2024", "SUPERMBK", "MBK24", "LUCKCOIN", 
-"MOREBOOK24", "WINLUCKY", "PRIZEMORE", "BIGCOIN241", "LUCKBOOK", "REWARDS20242", "GETBIGCOIN", "COINHERO", 
-"GETLUCK24", "BIGWIN2024", "LUCKYTOKEN", "MBKLUCKY", "SHINE24", "WINPRIZE", "BIGMBK24", "BONUSPRIZE100"]
-;
+        const validPromoCodes = ["MATH2024", "BOOK2024", "TOKEN2024", "WINNER2024", "MB127", "GJYO5", "907BOOK", "1DOLLARperCOIN", "FUN2024", 
+        "COOL024", "MONEY2024", "MB025", "HAPPY202", "LUCK2024", "SMARTBOOK", "GENIUS204", "PASS2024", "EASYMBK", 
+        "GETBOOK", "COINWIN", "WINMBK", "HERO2024", "FINDTOKEN", "MYCOIN2024", "SHARE2034", "FUNNYMBK", "BOOST2024", 
+        "MBWIN2074", "TOKENFINDER", "LUCKYBOOK", "NEWCOIN2024", "PRIZE2004", "TREASURE24", "COOLCOIN", "GETMORE", 
+        "WINNERCOIN", "REWARD24", "1COIN4U", "NEWBOOK24", "EASYCOIN", "1MBFORU", "EXTRABOOK", "BOOKGENIUS", 
+        "TOPTOKEN", "BONUS25", "RICHCOIN", "LUCK24", "GETWIN", "WINSOON", "LUCKMBK", "GREAT2025", "FUNNY2025", 
+        "GOODLUCK", "SMART2064", "TOPMBK", "GOLDEN24", "BESTCOIN", "TOPPRIZE", "WINBIG24", "1DOLLARMORE", "MOREWIN24", 
+        "MYLUCK24", "NEWBOOK2BTC", "SMALLCOIN", "LUCKYNOW", "TOKENBOOST", "REWARD24", "WINBIG2044", "GOODTOKEN", 
+        "HUGEWIN245", "MYPRIZE24", "FRESHCOIN", "WINCOIN240", "EXTRATOKEN", "RICHBOOK", "LUCKFORU", "SHAREBIG", 
+        "PRIZECOIN", "DREAM2024", "GETBOOK24", "1TOKEN4U", "LUCKY2024", "SUPERMBK", "MBK24", "LUCKCOIN", 
+        "MOREBOOK24", "WINLUCKY", "PRIZEMORE", "BIGCOIN241", "LUCKBOOK", "REWARDS20242", "GETBIGCOIN", "COINHERO", 
+        "GETLUCK24", "BIGWIN2024", "LUCKYTOKEN", "MBKLUCKY", "SHINE24", "WINPRIZE", "BIGMBK24", "BONUSPRIZE100"];
+
         const lockoutTimes = JSON.parse(localStorage.getItem('lockoutTimes')) || { basic: 0, medium: 0, advanced: 0 };
-
         let gameInterval;
-        let gameTime = 60;
-        let questionInterval;
+        let gameTime = 60; // seconds
+        let currentLevel = null; // To keep track of the current game level for question generation
+        // No need for questionInterval, will generate next question upon answer or if time runs out for current question (not implemented here)
 
+        // --- DOM Elements (Cache them if used frequently) ---
+        const loadingPage = document.getElementById('loadingPage');
+        const gameContainer = document.getElementById('gameContainer');
+        const loginContainer = document.getElementById('loginContainer');
+        const walletContainer = document.getElementById('walletContainer');
+        const mathsBookBalanceDisplay = document.getElementById("mathsBookBalance");
+        const timerDisplay = document.getElementById("timer");
+        const questionContainer = document.getElementById("questionContainer");
+        const helpModal = document.getElementById("helpModal");
+        const rewardMessageDisplay = document.getElementById("rewardMessage");
+        const codeMessageDisplay = document.getElementById("codeMessage");
+        const walletTelegramIDDisplay = document.getElementById("walletTelegramID");
+        const walletBalanceDisplay = document.getElementById("walletBalanceDisplay");
+        const historyList = document.getElementById("historyList");
+        const levelLockoutTimerDisplay = document.getElementById("levelLockoutTimer");
+
+
+        // --- Utility Functions ---
+        function updateBalanceDisplay() {
+            if (mathsBookBalanceDisplay) mathsBookBalanceDisplay.innerText = mathsBookBalance.toFixed(3); // Show 3 decimal places for small rewards
+            if (walletBalanceDisplay) walletBalanceDisplay.innerText = mathsBookBalance.toFixed(3);
+        }
+
+        function showCustomAlert(message, type = 'info') {
+            // For a more polished app, replace window.alert with a custom modal
+            // For now, using window.alert for simplicity
+            alert(message); 
+            // Example: if type === 'error', style it red, etc.
+        }
+        
+        function transitionToMainPage() {
+            if (loadingPage) loadingPage.style.display = 'none';
+            if (gameContainer) gameContainer.style.display = 'block';
+            updateBalanceDisplay();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(transitionToMainPage, 3000); // Simulate loading time
+            // Initial display update
+            updateBalanceDisplay();
+            // Check and display lockout timers
+            updateLockoutTimersDisplay(); 
+            setInterval(updateLockoutTimersDisplay, 1000 * 30); // Update lockout display every 30s
+        });
+
+        // --- Game Logic ---
         function shuffleOptions(options) {
             return options.sort(() => Math.random() - 0.5);
         }
 
         const randomBasicQuestion = () => {
-            const a = Math.floor(Math.random() * 10);
-            const b = Math.floor(Math.random() * 10);
+            const a = Math.floor(Math.random() * 10) + 1; // Avoid 0+0 type questions
+            const b = Math.floor(Math.random() * 10) + 1;
             const correctAnswer = a + b;
-            const options = shuffleOptions([correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 2]);
-            return { question: `What is ${a} + ${b}?`, options, answer: correctAnswer };
+            const options = shuffleOptions([correctAnswer, correctAnswer + 1, correctAnswer - 1, correctAnswer + 2].filter(opt => opt >=0)); // Ensure positive options
+            return { question: `What is ${a} + ${b}?`, options, answer: correctAnswer.toString() };
         };
 
         const randomMediumQuestion = () => {
-            const a = Math.floor(Math.random() * 20);
-            const b = Math.floor(Math.random() * 10);
+            const a = Math.floor(Math.random() * 15) + 1; // Numbers up to 15
+            const b = Math.floor(Math.random() * 10) + 1;
             const correctAnswer = a * b;
-            const options = shuffleOptions([correctAnswer, correctAnswer - 10, correctAnswer + 10, correctAnswer - 5]);
-            return { question: `What is ${a} * ${b}?`, options, answer: correctAnswer };
+            const options = shuffleOptions([correctAnswer, correctAnswer - b, correctAnswer + b, correctAnswer - a].filter(opt => opt >=0));
+            return { question: `What is ${a} × ${b}?`, options, answer: correctAnswer.toString() };
         };
 
         const randomAdvancedQuestion = () => {
-            const derivative = Math.floor(Math.random() * 10);
-            return { question: `What is the derivative of ${derivative}x?`, answer: `${derivative}` };
+            // Simple derivative: ax -> a
+            const coefficient = Math.floor(Math.random() * 10) + 1; // Coefficient from 1 to 10
+            const variable = 'x'; // Or could randomize variable
+            // More complex could be ax^n -> anx^(n-1)
+            // For now, keeping it simple:
+            return { question: `What is the derivative of ${coefficient}${variable} with respect to ${variable}?`, answer: coefficient.toString() };
         };
+        
+        function displayNextQuestion(level) {
+            const getQuestion = (lvl) => {
+                if (lvl === "basic") return randomBasicQuestion();
+                if (lvl === "medium") return randomMediumQuestion();
+                if (lvl === "advanced") return randomAdvancedQuestion();
+                return randomBasicQuestion(); // Default
+            };
+
+            const questionObj = getQuestion(level);
+            currentLevel = level; // Store current level
+
+            let optionsHTML = '';
+            if (questionObj.options && questionObj.options.length > 0) {
+                optionsHTML = questionObj.options.map(opt => `<button class="answer" onclick="submitAnswer('${opt}', '${questionObj.answer}')">${opt}</button>`).join('');
+            } else { // For advanced questions or direct input
+                optionsHTML = `
+                    <input type="text" id="advancedAnswerInput" placeholder="Your answer" style="margin-bottom:10px;">
+                    <button class="button" onclick="submitAnswer(document.getElementById('advancedAnswerInput').value.trim(), '${questionObj.answer}')">Submit</button>
+                `;
+            }
+            questionContainer.innerHTML = `<p>${questionObj.question}</p>${optionsHTML}`;
+        }
+
 
         function startGame(level) {
-            clearInterval(gameInterval);
-            clearInterval(questionInterval);
-            gameTime = 60;
-
-            const lockoutTime = lockoutTimes[level] || 0;
-            if (Date.now() < lockoutTime) {
-                alert("Play this level again after three hours.");
+            if (gameInterval) clearInterval(gameInterval);
+            
+            const lockoutEndTime = lockoutTimes[level] || 0;
+            if (Date.now() < lockoutEndTime) {
+                const remainingTime = Math.ceil((lockoutEndTime - Date.now()) / 1000);
+                const hours = Math.floor(remainingTime / 3600);
+                const minutes = Math.floor((remainingTime % 3600) / 60);
+                showCustomAlert(`Level locked. Try again in ${hours}h ${minutes}m.`);
                 return;
             }
 
-            const getQuestion = (lvl) => lvl === "basic" ? randomBasicQuestion() : lvl === "medium" ? randomMediumQuestion() : randomAdvancedQuestion();
+            gameTime = 60;
+            timerDisplay.innerText = `Time Left: 1:00`;
+            questionContainer.innerHTML = ''; // Clear previous question
+            document.getElementById("finalScore").classList.add("hidden");
 
-            const displayNextQuestion = () => {
-                const questionObj = getQuestion(level);
-                let optionsHTML;
-                if (questionObj.options) {
-                    optionsHTML = questionObj.options.map(opt => `<button class="answer" onclick="submitAnswer('${opt}', '${questionObj.answer}', '${level}')">${opt}</button>`).join('');
-                } else {
-                    optionsHTML = `<input type="text" id="advancedAnswer"><button class="answer" onclick="submitAnswer(document.getElementById('advancedAnswer').value, '${questionObj.answer}', '${level}')">Submit</button>`;
-                }
-                document.getElementById("questionContainer").innerHTML = `<p>${questionObj.question}</p>${optionsHTML}`;
-            };
 
-            displayNextQuestion();
-
-            questionInterval = setInterval(displayNextQuestion, 5000);
+            displayNextQuestion(level); // Display first question
 
             gameInterval = setInterval(() => {
                 if (gameTime > 0) {
                     gameTime--;
-                    document.getElementById("timer").innerText = `Time Left: ${Math.floor(gameTime / 60)}:${gameTime % 60 < 10 ? '0' + gameTime % 60 : gameTime % 60}`;
+                    const minutes = Math.floor(gameTime / 60);
+                    const seconds = gameTime % 60;
+                    timerDisplay.innerText = `Time Left: ${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
                 } else {
-                    clearInterval(gameInterval);
-                    clearInterval(questionInterval);
                     endGame(level);
                 }
             }, 1000);
         }
-
-        function submitAnswer(selectedAnswer, correctAnswer, level) {
-            if (selectedAnswer == correctAnswer) {
+        
+        function submitAnswer(selectedAnswer, correctAnswer) {
+            if (selectedAnswer === correctAnswer) {
                 mathsBookBalance += 1.0;
-                localStorage.setItem("mathsBookBalance", mathsBookBalance);
-                document.getElementById("mathsBookBalance").innerText = mathsBookBalance.toFixed(2);
+                localStorage.setItem("mathsBookBalance", mathsBookBalance.toString());
+                updateBalanceDisplay();
+                // Optionally, show a quick "+1" notification
+            } else {
+                // Optionally, show a "Wrong answer" notification
             }
-            displayNextQuestion();  // Move to the next question automatically
+            // Display next question immediately for the current level
+            if (gameTime > 0 && currentLevel) {
+                 displayNextQuestion(currentLevel);
+            }
         }
 
         function endGame(level) {
-            lockoutTimes[level] = Date.now() + 3 * 60 * 60 * 1000;
+            clearInterval(gameInterval);
+            questionContainer.innerHTML = `<p>Game Over! Time's up.</p>`;
+            // document.getElementById("finalScore").innerText = `You earned some MathsBook! Check your balance.`; // Example
+            // document.getElementById("finalScore").classList.remove("hidden");
+            
+            lockoutTimes[level] = Date.now() + 3 * 60 * 60 * 1000; // 3 hour lockout
             localStorage.setItem('lockoutTimes', JSON.stringify(lockoutTimes));
-            alert("Game over! Time's up.");
+            updateLockoutTimersDisplay(); // Update display immediately
+            showCustomAlert("Game over! Time's up. This level is locked for 3 hours.");
         }
 
+        function updateLockoutTimersDisplay() {
+            let anyLockActive = false;
+            levelLockoutTimerDisplay.innerHTML = ''; // Clear previous messages
+            ['basic', 'medium', 'advanced'].forEach(level => {
+                const lockoutEndTime = lockoutTimes[level] || 0;
+                if (Date.now() < lockoutEndTime) {
+                    anyLockActive = true;
+                    const remainingTime = Math.ceil((lockoutEndTime - Date.now()) / 1000);
+                    const hours = Math.floor(remainingTime / 3600);
+                    const minutes = Math.floor((remainingTime % 3600) / 60);
+                    const seconds = remainingTime % 60;
+                    levelLockoutTimerDisplay.innerHTML += `<p>${level.charAt(0).toUpperCase() + level.slice(1)} level unlocks in: ${hours}h ${minutes}m ${seconds}s</p>`;
+                }
+            });
+            levelLockoutTimerDisplay.classList.toggle('hidden', !anyLockActive);
+        }
+
+
+        // --- Rewards & Codes ---
         function claimDailyReward() {
-    const dailyRewards = [1, 5, 10, 15, 20, 50, 100];
-    const lastClaimTime = parseInt(localStorage.getItem("lastClaimTime")) || 0;
-    let dailyRewardStreak = parseInt(localStorage.getItem("dailyRewardStreak")) || 0; // Start at 0 to match array index
-    const currentTime = Date.now();
+            const dailyRewards = [1, 5, 10, 15, 20, 50, 100]; // MBK amounts
+            const lastClaimTime = parseInt(localStorage.getItem("lastClaimTime")) || 0;
+            let dailyRewardStreak = parseInt(localStorage.getItem("dailyRewardStreak")) || 0;
+            const currentTime = Date.now();
 
-    // Ensure mathsBookBalance is initialized properly
-    let mathsBookBalance = parseFloat(localStorage.getItem("mathsBookBalance")) || 0;
+            // Check if 24 hours (86400000 milliseconds) have passed
+            if (currentTime - lastClaimTime >= 24 * 60 * 60 * 1000) {
+                const rewardIndex = dailyRewardStreak % dailyRewards.length; // Cycle through rewards
+                const rewardAmount = dailyRewards[rewardIndex];
+                
+                mathsBookBalance += rewardAmount;
+                localStorage.setItem("mathsBookBalance", mathsBookBalance.toString());
+                updateBalanceDisplay();
 
-    if (currentTime - lastClaimTime >= 86400000) { // Check if 24 hours have passed
-        // Cycle through rewards correctly
-        const reward = dailyRewards[dailyRewardStreak % 7];
-        mathsBookBalance += reward;
-        localStorage.setItem("mathsBookBalance", mathsBookBalance);
-        document.getElementById("mathsBookBalance").innerText = mathsBookBalance.toFixed(2);
+                dailyRewardStreak++; // Increment streak
+                localStorage.setItem("lastClaimTime", currentTime.toString());
+                localStorage.setItem("dailyRewardStreak", dailyRewardStreak.toString());
 
-        // Increment streak and cycle after 7 days
-        dailyRewardStreak = (dailyRewardStreak + 1) % 7;
-        localStorage.setItem("lastClaimTime", currentTime);
-        localStorage.setItem("dailyRewardStreak", dailyRewardStreak);
-
-        document.getElementById("rewardMessage").innerText = `You claimed ${reward} MathsBook!`;
-    } else {
-        alert("Daily reward already claimed.");
-    }
-}
+                rewardMessageDisplay.innerText = `You claimed ${rewardAmount} MathsBook! Streak: Day ${dailyRewardStreak}.`;
+                rewardMessageDisplay.style.color = 'var(--accent-gold)';
+            } else {
+                const nextClaimTime = lastClaimTime + (24*60*60*1000);
+                const remainingMs = nextClaimTime - currentTime;
+                const hours = Math.floor(remainingMs / (1000*60*60));
+                const minutes = Math.floor((remainingMs % (1000*60*60)) / (1000*60));
+                rewardMessageDisplay.innerText = `Daily reward already claimed. Next claim in ${hours}h ${minutes}m.`;
+                rewardMessageDisplay.style.color = '#FF6347'; // Tomato color for warning
+            }
+        }
 
         function redeemMathsBookCode() {
-            const inputCode = document.getElementById("mathsBookCode").value.trim();
-            const codeMessage = document.getElementById("codeMessage");
-            if (validCodes.includes(inputCode) && !usedCodes.includes(inputCode)) {
-                mathsBookBalance += 100;
+            const inputCode = document.getElementById("mathsBookCode").value.trim().toUpperCase(); // Case-insensitive
+            if (validPromoCodes.includes(inputCode) && !usedCodes.includes(inputCode)) {
+                mathsBookBalance += 100; // Example reward
                 usedCodes.push(inputCode);
                 localStorage.setItem('usedCodes', JSON.stringify(usedCodes));
-                localStorage.setItem('mathsBookBalance', mathsBookBalance);
-                document.getElementById('mathsBookBalance').innerText = mathsBookBalance.toFixed(2);
-                codeMessage.innerText = 'Code redeemed successfully! You earned 100 MathsBook.';
-                codeMessage.style.color = 'green';
+                localStorage.setItem('mathsBookBalance', mathsBookBalance.toString());
+                updateBalanceDisplay();
+                codeMessageDisplay.innerText = 'Code redeemed successfully! You earned 100 MathsBook.';
+                codeMessageDisplay.style.color = 'var(--accent-gold)';
+            } else if (usedCodes.includes(inputCode)) {
+                codeMessageDisplay.innerText = 'This MathsBook code has already been used.';
+                codeMessageDisplay.style.color = '#FF6347';
             } else {
-                codeMessage.innerText = 'Invalid or already used MathsBook code.';
-                codeMessage.style.color = 'red';
+                codeMessageDisplay.innerText = 'Invalid MathsBook code.';
+                codeMessageDisplay.style.color = '#FF6347';
             }
         }
 
         function collectBookToken() {
-            mathsBookBalance += 0.0005;
-            localStorage.setItem("mathsBookBalance", mathsBookBalance);
-            document.getElementById("mathsBookBalance").innerText = mathsBookBalance.toFixed(3);
+            const rewardAmount = 0.005; // Small reward for clicking the book
+            mathsBookBalance += rewardAmount;
+            localStorage.setItem("mathsBookBalance", mathsBookBalance.toString());
+            updateBalanceDisplay();
+            
             const notification = document.createElement("span");
             notification.classList.add("reward-notification");
-            notification.innerText = "+ 0.0005";
+            notification.innerText = `+${rewardAmount.toFixed(4)} MBK`;
             document.body.appendChild(notification);
-            setTimeout(() => document.body.removeChild(notification), 1000);
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                     document.body.removeChild(notification);
+                }
+            }, 1500);
         }
 
+        // --- Wallet & Login ---
         function openWallet() {
-            document.getElementById("gameContainer").style.display = "none";
+            gameContainer.style.display = "none";
             if (!telegramID) {
-                document.getElementById("loginContainer").style.display = "block";
+                loginContainer.style.display = "block";
+                walletContainer.style.display = "none";
             } else {
+                loginContainer.style.display = "none";
                 loadWallet();
             }
         }
 
         function loginToWallet() {
-            telegramID = document.getElementById("loginID").value.trim();
-            if (telegramID) {
+            const enteredID = document.getElementById("loginID").value.trim();
+            if (enteredID) {
+                telegramID = enteredID;
                 localStorage.setItem("telegramID", telegramID);
                 loadWallet();
             } else {
-                alert("Please enter a valid Telegram ID.");
+                showCustomAlert("Please enter a valid Telegram ID.");
             }
         }
 
         function loadWallet() {
-            document.getElementById("loginContainer").style.display = "none";
-            document.getElementById("walletContainer").style.display = "block";
-            document.getElementById("walletTelegramID").innerText = telegramID;
-            document.getElementById("walletBalanceDisplay").innerText = mathsBookBalance.toFixed(2);
+            loginContainer.style.display = "none";
+            walletContainer.style.display = "block";
+            walletTelegramIDDisplay.innerText = telegramID;
+            updateBalanceDisplay(); // Ensure wallet balance is also updated
             displayTransactionHistory();
         }
 
         function goBack() {
-            document.getElementById("walletContainer").style.display = "none";
-            document.getElementById("gameContainer").style.display = "block";
+            walletContainer.style.display = "none";
+            loginContainer.style.display = "none";
+            gameContainer.style.display = "block";
+            updateBalanceDisplay(); // Ensure game balance is updated
         }
 
         function generateTransferCode() {
             const recipientID = document.getElementById("recipientID").value.trim();
             const amount = parseFloat(document.getElementById("sendAmount").value);
-            const message = document.getElementById("sendMessage").value.trim();
-            if (!recipientID || amount < 10000 || amount > mathsBookBalance || !message) {
-                alert("Invalid input, minimum transfer is 10,000 MathsBook, or insufficient balance.");
+            const message = document.getElementById("sendMessage").value.trim(); // Optional message
+
+            if (!recipientID) {
+                showCustomAlert("Recipient Telegram ID is required.");
                 return;
             }
+            if (isNaN(amount) || amount < 10000) {
+                showCustomAlert("Invalid amount. Minimum transfer is 10,000 MathsBook.");
+                return;
+            }
+            if (amount > mathsBookBalance) {
+                showCustomAlert("Insufficient balance.");
+                return;
+            }
+
             mathsBookBalance -= amount;
-            localStorage.setItem("mathsBookBalance", mathsBookBalance);
-            document.getElementById("walletBalanceDisplay").innerText = mathsBookBalance.toFixed(2);
-            const data = `${telegramID}|${recipientID}|${amount}|${message}|${Date.now()}`;
-            const encryptedCode = btoa(data);
+            localStorage.setItem("mathsBookBalance", mathsBookBalance.toString());
+            updateBalanceDisplay();
+
+            // Data: sender|recipient|amount|message|timestamp|uniqueId (for preventing replay of same code)
+            const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+            const data = `${telegramID}|${recipientID}|${amount}|${message || 'N/A'}|${Date.now()}|${uniqueId}`;
+            const encryptedCode = btoa(data); // Simple base64 encoding
             document.getElementById("generatedCode").innerText = `Transfer Code: ${encryptedCode}`;
-            saveTransaction(`Sent ${amount} MathsBook to ${recipientID}`);
+            
+            saveTransaction(`Sent ${amount.toFixed(2)} MBK to ${recipientID}`);
         }
 
         function decodeTransferCode() {
             const encryptedCode = document.getElementById("transferCode").value.trim();
-            const expectedAmount = parseFloat(document.getElementById("receiveAmount").value);
-            const expectedMessage = document.getElementById("receiveMessage").value.trim();
+            const expectedAmountToVerify = parseFloat(document.getElementById("receiveAmount").value); // User verifies amount
+            const expectedMessageToVerify = document.getElementById("receiveMessage").value.trim(); // User verifies message
 
-            if (!encryptedCode || usedCodes.includes(encryptedCode)) {
-                alert("Invalid or already used transfer code.");
+            if (!encryptedCode) {
+                showCustomAlert("Please enter a transfer code.");
+                return;
+            }
+            if (isNaN(expectedAmountToVerify) || expectedAmountToVerify <= 0) {
+                showCustomAlert("Please enter a valid amount to verify.");
                 return;
             }
 
-            const decodedData = atob(encryptedCode).split('|');
-            if (decodedData[1] === telegramID && parseFloat(decodedData[2]) === expectedAmount && decodedData[3] === expectedMessage) {
-                mathsBookBalance += expectedAmount;
-                localStorage.setItem("mathsBookBalance", mathsBookBalance);
-                document.getElementById("walletBalanceDisplay").innerText = mathsBookBalance.toFixed(2);
-                usedCodes.push(encryptedCode);
+            if (usedCodes.includes(encryptedCode)) {
+                showCustomAlert("This transfer code has already been redeemed.");
+                return;
+            }
+
+            try {
+                const decodedDataString = atob(encryptedCode);
+                const decodedData = decodedDataString.split('|');
+                // Expected format: sender|recipient|amount|message|timestamp|uniqueId
+
+                if (decodedData.length < 5) { // Basic check for data integrity
+                    showCustomAlert("Invalid transfer code format.");
+                    return;
+                }
+
+                const senderID = decodedData[0];
+                const recipientID = decodedData[1];
+                const amount = parseFloat(decodedData[2]);
+                const message = decodedData[3];
+                // const timestamp = decodedData[4]; // Could add time-based expiry
+                // const uniqueId = decodedData[5]; // Already checked by usedCodes
+
+                if (recipientID !== telegramID) {
+                    showCustomAlert("This transfer code is not for you.");
+                    return;
+                }
+                if (amount !== expectedAmountToVerify) {
+                    showCustomAlert(`Amount verification failed. Code is for ${amount.toFixed(2)} MBK, you entered ${expectedAmountToVerify.toFixed(2)} MBK.`);
+                    return;
+                }
+                 if (message !== 'N/A' && message !== expectedMessageToVerify) {
+                    showCustomAlert("Message verification failed. The sender's message does not match what you entered.");
+                    return;
+                }
+
+
+                mathsBookBalance += amount;
+                localStorage.setItem("mathsBookBalance", mathsBookBalance.toString());
+                updateBalanceDisplay();
+                
+                usedCodes.push(encryptedCode); // Mark code as used
                 localStorage.setItem("usedCodes", JSON.stringify(usedCodes));
-                saveTransaction(`Received ${expectedAmount} MathsBook from ${decodedData[0]}`);
-                alert("Transfer successful!");
-            } else {
-                alert("Transfer code details do not match.");
+                
+                saveTransaction(`Received ${amount.toFixed(2)} MBK from ${senderID}`);
+                showCustomAlert("Transfer successful! MathsBook received.");
+                // Clear input fields after successful redemption
+                document.getElementById("transferCode").value = '';
+                document.getElementById("receiveAmount").value = '';
+                document.getElementById("receiveMessage").value = '';
+
+            } catch (e) {
+                showCustomAlert("Invalid or corrupted transfer code.");
+                console.error("Decode error:", e);
             }
         }
-
+        
         function toggleHistory() {
-            document.getElementById("historyList").classList.toggle("hidden");
+            historyList.classList.toggle("hidden");
         }
 
-        function saveTransaction(transaction) {
-            const history = JSON.parse(localStorage.getItem("transactionHistory")) || [];
-            history.unshift({ transaction, date: new Date().toLocaleString() });
-            localStorage.setItem("transactionHistory", JSON.stringify(history));
-            displayTransactionHistory();
+        function saveTransaction(transactionDetails) {
+            const history = JSON.parse(localStorage.getItem("transactionHistory_" + telegramID)) || []; // User-specific history
+            history.unshift({ details: transactionDetails, date: new Date().toLocaleString() });
+            if (history.length > 50) history.pop(); // Limit history size
+            localStorage.setItem("transactionHistory_" + telegramID, JSON.stringify(history));
+            displayTransactionHistory(); // Update display
         }
 
         function displayTransactionHistory() {
-            const historyList = document.getElementById("historyList");
-            historyList.innerHTML = "";
-            const history = JSON.parse(localStorage.getItem("transactionHistory")) || [];
+            if (!historyList) return;
+            historyList.innerHTML = ""; // Clear previous entries
+            const history = JSON.parse(localStorage.getItem("transactionHistory_" + telegramID)) || [];
+            if (history.length === 0) {
+                historyList.innerHTML = "<li>No transactions yet.</li>";
+                return;
+            }
             history.forEach(item => {
                 const listItem = document.createElement("li");
-                listItem.innerText = `${item.transaction} - ${item.date}`;
+                listItem.innerText = `${item.details} - ${item.date}`;
                 historyList.appendChild(listItem);
             });
         }
 
         function toggleHelp() {
-            const helpModal = document.getElementById("helpModal");
             helpModal.style.display = helpModal.style.display === 'none' || !helpModal.style.display ? 'block' : 'none';
         }
-         // JavaScript for button functionality
-document.addEventListener("DOMContentLoaded", () => {
-    const exchangeButton = document.getElementById("exchangeButton");
-    const videosButton = document.getElementById("videosButton");
-    const shopButton = document.getElementById("shopButton");
-    const referralButton = document.getElementById("referralButton");
 
-    // Add event listeners for button clicks
-    exchangeButton.addEventListener("click", openExchange);
-    videosButton.addEventListener("click", openVideos);
-    shopButton.addEventListener("click", openShop);
-    referralButton.addEventListener("click", openReferral);
-});
+        // --- External Links & Navigation ---
+        document.addEventListener("DOMContentLoaded", () => {
+            // ... existing DOMContentLoaded logic ...
 
-// Open Exchange page
-function openExchange() {
-    window.open("https://verifiedandtrusted.github.io/MathsBookMenu/", "_blank");
-}
+            const exchangeButtonNav = document.getElementById("exchangeButtonNav");
+            const videosButton = document.getElementById("videosButton");
+            const shopButton = document.getElementById("shopButton");
+            const referralButton = document.getElementById("referralButton");
 
-// Open Videos page
-function openVideos() {
-    window.open("https://verifiedandtrusted.github.io/InvestMathsBook-/", "_blank");
-}
+            if(exchangeButtonNav) exchangeButtonNav.addEventListener("click", () => window.open("https://verifiedandtrusted.github.io/MathsBookMenu/", "_blank"));
+            if(videosButton) videosButton.addEventListener("click", () => window.open("https://verifiedandtrusted.github.io/InvestMathsBook-/", "_blank"));
+            if(shopButton) shopButton.addEventListener("click", () => window.open("https://verifiedandtrusted.github.io/MathsBook-Shop/", "_blank"));
+            if(referralButton) referralButton.addEventListener("click", () => window.open("https://verifiedandtrusted.github.io/AboutMathsBook-/", "_blank"));
+        });
 
-// Open Shop page
-function openShop() {
-    window.open("https://verifiedandtrusted.github.io/MathsBook-Shop/", "_blank");
-}
+        function openVendorSite() {
+            window.open("https://verifiedandtrusted.github.io/Mathsbook-vendor/", "_blank");
+        }
 
-// Open Referral page
-function openReferral() {
-    window.open("https://verifiedandtrusted.github.io/AboutMathsBook-/", "_blank");
-}
     </script>
 </body>
 </html>
